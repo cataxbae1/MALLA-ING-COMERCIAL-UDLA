@@ -81,29 +81,41 @@ ramos.forEach(r => estadoRamos[r.codigo] = false);
 
 // Los prerrequisitos de cada ramo para desbloquearlo
 const prerrequisitos = {
+  // Primer año
   "ACI309": ["ACI107"],
   "AEA320": ["AEA011"],
   "AEA420": ["AEA011", "TDE400"],
   "AEA605": ["AEA011"],
   "AUD222": ["AUD100"],
   "AUD444": ["AUD100"],
-  "AEA504": ["AUD100", "MAT100"],
   "AUD814": ["AUD100"],
+  "AEA504": ["AUD100", "MAT100"],
   "AEA220": ["MAT100"],
   "MAT140": ["MAT100"],
   "MAT170": ["MAT100"],
   "AES500": ["MAT100"],
   "LCE002": ["LCE001"],
-  "AEA325": ["AEA240", "AEA320", "AEA503"],
-  "AEA920": ["AEA240"],
+
+  // Segundo año
+  "LCE003": ["LCE002"],
+  "AEA364": ["AUD444"],
   "AEA214": ["AEA220", "MAT170"],
   "AEA316": ["AEA220"],
   "AEA503": ["AEA320"],
+  "AEA325": ["AEA240", "AEA320", "AEA503"],
+  "AEA920": ["AEA240"],
+  "AEA891": ["AEA320"],
+  "AEA790": ["AEA320", "AEA605"],
+  "AEA520": ["AEA320"],
+
+  // Segundo año II semestre
+  "AEA513": ["AEA503", "AEA364"],
+  "AEA555": ["AEA503", "AEA504"],
+  "AEA893": ["AEA503", "AEA364", "AES510"],
+  "AEA783": ["AEA503", "AEA364"],
   "AES510": ["AES500"],
   "EIN810": ["AES500"],
   "AEA540": ["AES500"],
-  "LCE003": ["LCE002"],
-  "AEA555": ["AEA504", "AEA503"],
   "AEA694": ["AEA504"],
   "AEA980": ["AEA504", "AEA555"],
   "AEA530": ["AEA420"],
@@ -111,19 +123,15 @@ const prerrequisitos = {
   "AEA315": ["AEA214"],
   "AEA425": ["AEA214", "AES510"],
   "AEA940": ["AEA214", "AEA316"],
-  "AEA364": ["AUD444"],
-  "AEA513": ["AEA503", "AEA364"],
-  "AEA893": ["AEA503", "AEA364", "AES510"],
+
+  // Tercer año
+  "AEA040": ["AEA364", "AEA513", "AEA555", "AEA605", "AEA325"],
   "EIN813": ["EIN810", "AEA325"],
-  "AEA417": ["AEA316"],
-  "AUD814": ["AUD100"],
-  "AEA790": ["AEA320", "AEA605"],
+
+  // Cuarto año
   "AEA982": ["AEA605"],
-  "AEA891": ["AEA320"],
+  "AEA417": ["AEA316"],
   "AEA394": ["AEA694"],
-  "AEA040": ["AEA364", "AEA325", "AEA555", "AEA605"],
-  "AEA540": ["AES500"],
-  "AEA520": ["AEA320"],
   "AEA404": ["AEA555"]
 };
 
