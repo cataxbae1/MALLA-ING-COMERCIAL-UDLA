@@ -1,3 +1,4 @@
+// Malla por año y semestre
 const malla = {
   "PRIMER AÑO": {
     "I SEMESTRE": ["ACI107", "AEA011", "AUD100", "MAT100", "TDE400"],
@@ -21,6 +22,7 @@ const malla = {
   }
 };
 
+// Información de los ramos
 const ramos = [
   { codigo: "ACI107", nombre: "Tecnología de la Información I" },
   { codigo: "AEA011", nombre: "Introducción a los Negocios" },
@@ -64,19 +66,19 @@ const ramos = [
   { codigo: "AEA694", nombre: "Finanzas Corporativas" },
   { codigo: "AEA530", nombre: "Negociación y Resolución de Conflictos" },
   { codigo: "AEA893", nombre: "Investigación de Mercados" },
-  { codigo: "AEA920", nombre: "Gestión de Empresas Nuevos Negocios" },
+  { codigo: "AEA920", nombre: "Gestión de Emp. Nuevos Negocios" },
   { codigo: "AEA980", nombre: "Taller de Consultoría" },
   { codigo: "AEA394", nombre: "Instrumentos de Inversión" },
   { codigo: "AEA783", nombre: "Gestión de Marcas" },
   { codigo: "AEA940", nombre: "Economía para Políticas Públicas" },
-  { codigo: "AEA988", nombre: "Taller Desarrollo de Carrera" },
+  { codigo: "AEA988", nombre: "T. Desarrollo de Carrera" },
   { codigo: "AEA540", nombre: "Decisiones y Simulación" },
   { codigo: "AEA040", nombre: "Taller Aplicado a Administración" },
   { codigo: "AEA520", nombre: "Responsabilidad Social Corporativa" },
   { codigo: "AEA404", nombre: "Financiamiento de Inversiones" }
 ];
 
-// ✅ Prerrequisitos corregidos fielmente
+// ✅ Prerrequisitos corregidos
 const prerrequisitos = {
   "ACI309": ["ACI107"],
   "AEA320": ["AEA011"],
@@ -84,18 +86,15 @@ const prerrequisitos = {
   "AEA605": ["AEA011"],
   "AUD222": ["AUD100"],
   "AUD444": ["AUD100"],
-  "AEA504": ["AUD100", "MAT100"],
   "AUD814": ["AUD100"],
+  "AEA504": ["AUD100", "MAT100"],
   "AEA220": ["MAT100"],
   "MAT140": ["MAT100"],
   "MAT170": ["MAT100"],
   "AES500": ["MAT100"],
   "LCE002": ["LCE001"],
   "LCE003": ["LCE002"],
-  "ACI309": ["ACI107"],
   "AEA364": ["AUD444"],
-  "AEA214": ["AEA220", "MAT170"],
-  "AEA316": ["AEA220"],
   "AEA503": ["AEA320"],
   "AEA325": ["AEA240", "AEA320", "AEA503"],
   "AEA920": ["AEA240"],
@@ -113,6 +112,7 @@ const prerrequisitos = {
   "AEA980": ["AEA504", "AEA555"],
   "AEA530": ["AEA420"],
   "AEA988": ["AEA420"],
+  "AEA214": ["AEA220", "MAT170"],
   "AEA315": ["AEA214"],
   "AEA425": ["AEA214", "AES510"],
   "AEA940": ["AEA214", "AEA316"],
@@ -124,12 +124,27 @@ const prerrequisitos = {
   "AEA404": ["AEA555"]
 };
 
-const estadoRamos = {};
+let estadoRamos = {};
 ramos.forEach(r => estadoRamos[r.codigo] = false);
 
+function cargarProgreso() {
+  const guardado = localStorage.getItem("estadoRamos");
+  if (guardado) estadoRamos = JSON.parse(guardado);
+}
+
+function guardarProgreso() {
+  localStorage.setItem("estadoRamos", JSON.stringify(estadoRamos));
+}
+
 function puedeAprobar(codigo) {
-  const prereqs = prerrequisitos[codigo] || [];
-  return prereqs.every(pr => estadoRamos[pr]);
+  const reqs = prerrequisitos[codigo] || [];
+  return reqs.every(pr => estadoRamos[pr]);
+}
+
+function calcularPorcentaje() {
+  const total = Object.keys(estadoRamos).length;
+  const aprobados = Object.values(estadoRamos).filter(Boolean).length;
+  document.getElementById("porcentaje").textContent = `${((aprobados / total) * 100).toFixed(1)}%`;
 }
 
 function renderMalla() {
@@ -137,17 +152,17 @@ function renderMalla() {
   contenedor.innerHTML = "";
 
   for (const [anio, semestres] of Object.entries(malla)) {
-    const tituloAnio = document.createElement("h2");
-    tituloAnio.textContent = anio;
-    contenedor.appendChild(tituloAnio);
+    const h2 = document.createElement("h2");
+    h2.textContent = anio;
+    contenedor.appendChild(h2);
 
-    for (const [semestre, codigos] of Object.entries(semestres)) {
-      const tituloSemestre = document.createElement("h3");
-      tituloSemestre.textContent = semestre;
-      contenedor.appendChild(tituloSemestre);
+    for (const [sem, codigos] of Object.entries(semestres)) {
+      const h3 = document.createElement("h3");
+      h3.textContent = sem;
+      contenedor.appendChild(h3);
 
-      const divGrupo = document.createElement("div");
-      divGrupo.className = "ramos";
+      const grupo = document.createElement("div");
+      grupo.className = "ramos";
 
       codigos.forEach(codigo => {
         const ramo = ramos.find(r => r.codigo === codigo);
@@ -157,24 +172,12 @@ function renderMalla() {
         div.className = "ramo";
         div.textContent = `${ramo.nombre} (${ramo.codigo})`;
 
-        if (estadoRamos[ramo.codigo]) {
+        if (estadoRamos[codigo]) {
           div.classList.add("aprobado");
-        } else if (!puedeAprobar(ramo.codigo)) {
+        } else if (!puedeAprobar(codigo)) {
           div.classList.add("bloqueado");
         }
 
         div.onclick = () => {
-          if (!puedeAprobar(ramo.codigo)) return;
-          estadoRamos[ramo.codigo] = !estadoRamos[ramo.codigo];
-          renderMalla();
-        };
-
-        divGrupo.appendChild(div);
-      });
-
-      contenedor.appendChild(divGrupo);
-    }
-  }
-}
-
-renderMalla();
+          if (!puedeAprobar(codigo)) return;
+          estadoRamos[codigo] = !estadoRamos
